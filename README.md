@@ -25,11 +25,14 @@ import numpy as np
 np.random.seed(0)
 from nltk import word_tokenize
 from gensim.models import word2vec
+import warnings
+warnings.filterwarnings('ignore')
+
 ```
 
-    C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\gensim\utils.py:1197: UserWarning: detected Windows; aliasing chunkize to chunkize_serial
+    C:\Users\FlatIron_User\.conda\envs\learn-env\lib\site-packages\gensim\utils.py:1197: UserWarning: detected Windows; aliasing chunkize to chunkize_serial
       warnings.warn("detected Windows; aliasing chunkize to chunkize_serial")
-
+    
 
 Now, load the dataset. You'll be working with the same dataset you worked with in the previous lab for this section, which you'll find inside `News_Category_Dataset_v2.zip`.  **_Go into the repo and unzip this file before continuing._**
 
@@ -39,14 +42,14 @@ Once you've unzipped this dataset, go ahead and use pandas to read the data stor
 
 
 ```python
-df = pd.read_json('News_Category_Dataset_v2.json', lines=True)
+df = pd.read_json('~/DataScience/News_Category_Dataset_v2.json', lines=True)
 df = df.sample(frac=0.2)
 print(len(df))
 df.head()
 ```
 
     40171
-
+    
 
 
 
@@ -79,49 +82,49 @@ df.head()
   </thead>
   <tbody>
     <tr>
-      <th>20315</th>
-      <td>Janis Ian, ContributorSongwriter, author, perf...</td>
+      <th>23341</th>
+      <td></td>
       <td>POLITICS</td>
-      <td>2017-07-28</td>
-      <td>This Is Not Government. It's Savagery.</td>
-      <td>https://www.huffingtonpost.com/entry/this-is-n...</td>
-      <td>I want to move to Hawaii solely to be able to ...</td>
+      <td>2017-06-21</td>
+      <td>Jared Kushner Arrives In Israel For Whirlwind ...</td>
+      <td>https://www.huffingtonpost.com/entry/jared-kus...</td>
+      <td>It remains unclear what approach the White Hou...</td>
     </tr>
     <tr>
-      <th>105941</th>
-      <td>Amanda Terkel</td>
-      <td>POLITICS</td>
-      <td>2014-11-23</td>
-      <td>GOP Senator Urges Republicans To Move On From ...</td>
-      <td>https://www.huffingtonpost.com/entry/jeff-flak...</td>
+      <th>100639</th>
+      <td>JamesMichael Nichols</td>
+      <td>QUEER VOICES</td>
+      <td>2015-01-23</td>
+      <td>'The Best Thing Is To See How Much Love Can Do...</td>
+      <td>https://www.huffingtonpost.com/entry/stacy-hol...</td>
       <td></td>
     </tr>
     <tr>
-      <th>173890</th>
-      <td>Marcus Samuelsson, Contributor\nAward-Winning ...</td>
-      <td>FOOD &amp; DRINK</td>
-      <td>2012-11-14</td>
-      <td>10 Recipes, 10 Ways To Deliciously Use Your Th...</td>
-      <td>https://www.huffingtonpost.com/entry/10-recipe...</td>
-      <td>My 10 favorite ways to make sure you're not wa...</td>
+      <th>184179</th>
+      <td>Party Earth, Contributor\nContributor</td>
+      <td>TRAVEL</td>
+      <td>2012-07-25</td>
+      <td>Berlin's Nightlife: 48 Hours You Might Not Rem...</td>
+      <td>https://www.huffingtonpost.com/entry/berlins-n...</td>
+      <td>If you think spending time boozing and schmooz...</td>
     </tr>
     <tr>
-      <th>177657</th>
-      <td>Michelle Manetti</td>
-      <td>HOME &amp; LIVING</td>
-      <td>2012-10-04</td>
-      <td>Doorless Refrigerator Wall By Electrolux Desig...</td>
-      <td>https://www.huffingtonpost.com/entry/doorless-...</td>
-      <td>Hey, here's a way to subtract a step between y...</td>
+      <th>136649</th>
+      <td>Shelly Ulaj, Contributor\nFounder and CEO of W...</td>
+      <td>DIVORCE</td>
+      <td>2013-12-13</td>
+      <td>Finding Strength to Stand on Your Own</td>
+      <td>https://www.huffingtonpost.com/entry/finding-s...</td>
+      <td>I was so used to being taken care of by family...</td>
     </tr>
     <tr>
-      <th>97563</th>
-      <td>Jon Hartley, ContributorWorld Economic Forum G...</td>
-      <td>BUSINESS</td>
-      <td>2015-02-27</td>
-      <td>The Emerging Markets Housing Bubble</td>
-      <td>https://www.huffingtonpost.com/entry/the-emerg...</td>
-      <td>While in most advanced economies, housing pric...</td>
+      <th>196185</th>
+      <td>Ellie Krupnick</td>
+      <td>STYLE &amp; BEAUTY</td>
+      <td>2012-03-18</td>
+      <td>Alexander Wang Lawsuit Will Move To Federal Co...</td>
+      <td>https://www.huffingtonpost.com/entry/alexander...</td>
+      <td>Representatives of Alexander Wang's brand cont...</td>
     </tr>
   </tbody>
 </table>
@@ -172,12 +175,20 @@ len(total_vocabulary)
 print("There are {} unique tokens in the dataset.".format(len(total_vocabulary)))
 ```
 
-    There are 71277 unique tokens in our dataset.
-
+    There are 71173 unique tokens in the dataset.
+    
 
 Now that you have gotten the total vocabulary, you can get the appropriate vectors out of the GloVe file. 
 
 For the sake of expediency, the code to read the appropriate vectors from the file is included below. 
+
+
+```python
+!move C:\Users\FlatIron_User\DataScience\glove.6B.50d.txt C:\Users\FlatIron_User\DataScience\section49\dsc-classification-with-word-embeddings-codealong-online-ds-ft-090919
+```
+
+    The system cannot find the file specified.
+    
 
 
 ```python
@@ -190,6 +201,14 @@ with open('glove.6B.50d.txt', 'rb') as f:
             vector = np.array(parts[1:], dtype=np.float32)
             glove[word] = vector
 ```
+
+
+```python
+!move glove.6B.50d.txt C:\Users\FlatIron_User\DataScience
+```
+
+            1 file(s) moved.
+    
 
 After running the cell above, you now have all of the words and their corresponding vocabulary stored within the dictionary, `glove`, as key/value pairs. 
 
@@ -216,6 +235,18 @@ glove['school']
            -0.8724   , -0.51648  , -0.30662  ,  0.37784  ,  0.016734 ,
             0.23813  ,  0.49411  , -0.56643  , -0.18744  ,  0.62809  ],
           dtype=float32)
+
+
+
+
+```python
+len(glove), len(glove['school'])
+```
+
+
+
+
+    (27183, 50)
 
 
 
@@ -291,26 +322,14 @@ scores = [(name, cross_val_score(model, data, target, cv=2).mean()) for name, mo
 ```
 
     [Parallel(n_jobs=1)]: Using backend SequentialBackend with 1 concurrent workers.
-    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:   19.8s finished
+    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:   20.7s finished
     [Parallel(n_jobs=1)]: Using backend SequentialBackend with 1 concurrent workers.
-    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:    1.3s finished
+    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:    1.2s finished
     [Parallel(n_jobs=1)]: Using backend SequentialBackend with 1 concurrent workers.
-    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:   21.5s finished
+    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:   20.3s finished
     [Parallel(n_jobs=1)]: Using backend SequentialBackend with 1 concurrent workers.
-    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:    1.4s finished
-    C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\sklearn\svm\base.py:196: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
-      "avoid this warning.", FutureWarning)
-    C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\sklearn\svm\base.py:196: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
-      "avoid this warning.", FutureWarning)
-    C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:433: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
-      FutureWarning)
-    C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:460: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
-      "this warning.", FutureWarning)
-    C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:433: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
-      FutureWarning)
-    C:\Users\medio\AppData\Local\Continuum\anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:460: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
-      "this warning.", FutureWarning)
-
+    [Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed:    1.2s finished
+    
 
 
 ```python
@@ -320,9 +339,9 @@ scores
 
 
 
-    [('Random Forest', 0.3195585321385761),
-     ('Support Vector Machine', 0.3025076172472023),
-     ('Logistic Regression', 0.3280980534586512)]
+    [('Random Forest', 0.31960910174587964),
+     ('Support Vector Machine', 0.3036012008096788),
+     ('Logistic Regression', 0.3255087322734529)]
 
 
 
@@ -348,6 +367,9 @@ from keras import initializers, regularizers, constraints, optimizers, layers
 from keras.preprocessing import text, sequence
 ```
 
+    Using TensorFlow backend.
+    
+
 Next, you'll convert the labels to a one-hot encoded format.
 
 
@@ -366,6 +388,18 @@ tokenizer.fit_on_texts(list(df.combined_text))
 list_tokenized_headlines = tokenizer.texts_to_sequences(df.combined_text)
 X_t = sequence.pad_sequences(list_tokenized_headlines, maxlen=100)
 ```
+
+
+```python
+np.shape(X_t)
+```
+
+
+
+
+    (40171, 100)
+
+
 
 Now, construct the neural network. Notice how the **_Embedding Layer_** comes second, after the input layer. In the Embedding Layer, you specify the size you want the word vectors to be, as well as the size of the embedding space itself.  The embedding size you specified is 128, and the size of the embedding space is best as the size of the total vocabulary that we're using. Since you limited the vocab to 20000, that's the size you choose for the embedding layer. 
 
@@ -406,27 +440,27 @@ model.summary()
     _________________________________________________________________
     Layer (type)                 Output Shape              Param #   
     =================================================================
-    input_3 (InputLayer)         (None, 100)               0         
+    input_1 (InputLayer)         (None, 100)               0         
     _________________________________________________________________
-    embedding_3 (Embedding)      (None, 100, 128)          2560000   
+    embedding_1 (Embedding)      (None, 100, 128)          2560000   
     _________________________________________________________________
-    lstm_3 (LSTM)                (None, 100, 25)           15400     
+    lstm_1 (LSTM)                (None, 100, 25)           15400     
     _________________________________________________________________
     global_max_pooling1d_1 (Glob (None, 25)                0         
     _________________________________________________________________
-    dropout_5 (Dropout)          (None, 25)                0         
+    dropout_1 (Dropout)          (None, 25)                0         
     _________________________________________________________________
-    dense_5 (Dense)              (None, 50)                1300      
+    dense_1 (Dense)              (None, 50)                1300      
     _________________________________________________________________
-    dropout_6 (Dropout)          (None, 50)                0         
+    dropout_2 (Dropout)          (None, 50)                0         
     _________________________________________________________________
-    dense_6 (Dense)              (None, 41)                2091      
+    dense_2 (Dense)              (None, 41)                2091      
     =================================================================
     Total params: 2,578,791
     Trainable params: 2,578,791
     Non-trainable params: 0
     _________________________________________________________________
-
+    
 
 Finally, you can fit the model by passing in the data, the labels, and setting some other hyperparameters such as the batch size, the number of epochs to train for, and what percentage of the training data to use for validation data. 
 
@@ -441,15 +475,15 @@ model.fit(X_t, y, epochs=2, batch_size=32, validation_split=0.1)
 
     Train on 36153 samples, validate on 4018 samples
     Epoch 1/2
-    36153/36153 [==============================] - 184s 5ms/step - loss: 2.6305 - acc: 0.3169 - val_loss: 2.4481 - val_acc: 0.3616
+    36153/36153 [==============================] - 140s 4ms/step - loss: 3.1117 - acc: 0.2179 - val_loss: 2.5876 - val_acc: 0.3442
     Epoch 2/2
-    36153/36153 [==============================] - 184s 5ms/step - loss: 2.3492 - acc: 0.3757 - val_loss: 2.3228 - val_acc: 0.4089
+    36153/36153 [==============================] - 139s 4ms/step - loss: 2.5120 - acc: 0.3538 - val_loss: 2.3047 - val_acc: 0.4201
+    
 
 
 
 
-
-    <keras.callbacks.History at 0x1d757632f98>
+    <keras.callbacks.History at 0x2407246d7b8>
 
 
 
